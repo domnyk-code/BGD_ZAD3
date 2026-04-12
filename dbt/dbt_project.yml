@@ -1,0 +1,12 @@
+name: bgd_taxi
+version: '1.0.0'
+profile: baby_pipeline
+
+models:
+  bgd_taxi:
+    silver:
+      +schema: silver
+      +materialized: incremental
+    gold:
+      +schema: gold
+      +materialized: table
