@@ -1,6 +1,6 @@
 -- Simple script for getting analysis of daily trips
 SELECT
-    pickup_at::date AS trip_date,
+    pickup_time::date AS trip_date,
     COUNT(*) AS total_trips,
     COUNT(DISTINCT vendor_id) as active_vendors,
 
@@ -13,7 +13,7 @@ SELECT
 	ROUND(SUM(tip_amount), 2) as total_tips,
 	ROUND(SUM(tolls_amount), 2) as total_tolls,
 	ROUND(SUM(total_amount), 2) as total_revenue,
-	ROUND(AVG(fare_amount), 2) as average_fares,
-FROM {{ ref('bgd_silver') }}
+	ROUND(AVG(fare_amount), 2) as average_fares
+FROM {{ ref('taxi_silver') }}
 GROUP BY trip_date
 ORDER BY trip_date
