@@ -27,6 +27,7 @@ services:
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      _PIP_ADDITIONAL_REQUIREMENTS: "dbt-core dbt-postgres" # SHOULD NOT BE DONE - but I am not sure how to build a standalone Airflow image yet
     command: standalone
     ports:
       - "8080:8080"
