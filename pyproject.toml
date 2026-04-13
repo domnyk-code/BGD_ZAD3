@@ -3,4 +3,15 @@ name = "pythonproject2"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "psycopg2-binary",
+    "sqlalchemy",
+
+    "apache-airflow==2.9.0",
+
+    "pandas",
+    "pyarrow",
+
+    "dbt-postgres",
+    "dbt-utils"
+]
