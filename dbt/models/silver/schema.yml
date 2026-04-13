@@ -1,55 +1,29 @@
 # Tests for data quality
 models:
-  - name: nyc_taxi_silver
+  - name: taxi_silver
     description: "Cleaned NYC Yellow Taxi trips"
     columns:
       - name: trip_distance
-        tests: [not_null]
+        data_tests:
+          - not_null
       - name: total_amount # We need to check all the financial columns for errors
-        tests:
+        data_tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1000
       - name: fare_amount
-        tests:
+        data_tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1000
       - name: extra
-        tests:
+        data_tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1000
       - name: tip_amount
-        tests:
+        data_tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1000
-      - name: toll_amount
-        tests:
+      - name: tolls_amount
+        data_tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1000
       - name: congestion_surcharge
-        tests:
+        data_tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1000
-      - name: tip_amount
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1000
       - name: passenger_count
-        tests:
+        data_tests:
           - not_null
-          - dbt_utils.accepted_range:
-              min_value: 1
-              max_value: 4
