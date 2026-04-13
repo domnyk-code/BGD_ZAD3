@@ -15,6 +15,7 @@ def load_bronze(file_path):
     print(f"Reading local file: {file_path}")
 
     # Testing API fetching... ideally able to get new parquet every month
+
     # url = TAXI_URL.format(year=year, month=month)
     # print(f"Downloading: {url}")
 
@@ -24,14 +25,14 @@ def load_bronze(file_path):
 
     engine = create_engine(DB_CONN)
     df.to_sql(
-        name="nyc_taxi_bronze",
+        name="taxi_bronze",
         con=engine,
         schema="bronze",
         if_exists="append", # Make sure the data is appended on each run
         index=False,
         chunksize=10_000,
     )
-    print(f"Loaded {len(df):,} rows into bronze.nyc_taxi_bronze")
+    print(f"Loaded {len(df):,} rows into bronze.taxi_bronze")
 
 with DAG(
     "bgd_taxi",
@@ -44,7 +45,9 @@ with DAG(
     ingest_bronze = PythonOperator(
         task_id="ingest_bronze",
         python_callable=load_bronze,
-        op_kwargs={"file_path": "placeholder"}, # Provide path to parquet file - work out how to launch this thing from cmd?
+        op_kwargs={"file_path": "/opt/airflow/data/yellow_tripdata_2024-01.parquet"},
+        # Provide path to parquet file - work out how to launch this thing from cmd?
+        # Also when launching from docker - needs to be attached volume path
     )
 
     dbt_silver = BashOperator(
