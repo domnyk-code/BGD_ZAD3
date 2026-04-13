@@ -6,6 +6,7 @@ import requests, pandas as pd
 from sqlalchemy import create_engine
 
 DB_CONN = "postgresql+psycopg2://airflow:airflow@postgres/airflow"
+# URL FOR later API integration
 # TAXI_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month:02d}.parquet"
 
 
@@ -13,7 +14,7 @@ def load_bronze(file_path):
 
     print(f"Reading local file: {file_path}")
 
-    # Testing API fetching...
+    # Testing API fetching... ideally able to get new parquet every month
     # url = TAXI_URL.format(year=year, month=month)
     # print(f"Downloading: {url}")
 
@@ -34,8 +35,8 @@ def load_bronze(file_path):
 
 with DAG(
     "bgd_taxi",
-    start_date=datetime(2024, 1, 1), # Placeholder
-    schedule="@monthly",
+    start_date=datetime(2024, 1, 1), # Placeholder - for when the script is finishes to fetch data from API
+    schedule="@monthly", # Same as above - but the files are published monthly, so it makes sense
     catchup=False,
     tags=["BGD"]
 ) as dag:
@@ -56,8 +57,10 @@ with DAG(
         bash_command="cd /opt/airflow/dbt && dbt run --select gold --profiles-dir .",
     )
 
-    # dbt_test = BashOperator(
-    #     task_id="dbt_test",
-    #     bash_command="cd /opt/airflow/dbt && dbt test --profiles-dir .",
-    # )
-    ingest_bronze >> dbt_silver >> dbt_gold
+    # Tests - apparently good for proper production environments?
+    dbt_test = BashOperator(
+        task_id="dbt_test",
+        bash_command="cd /opt/airflow/dbt && dbt test --profiles-dir .",
+    )
+
+    ingest_bronze >> dbt_silver >> dbt_gold >> dbt_test
