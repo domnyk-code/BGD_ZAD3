@@ -2,7 +2,7 @@ sources:
   - name: bronze
     schema: bronze
     tables:
-      - name: nyc_taxi_bronze
+      - name: taxi_bronze
         description: "Raw NYC Taxi trips"
         columns:
           - name:  vendor_id
