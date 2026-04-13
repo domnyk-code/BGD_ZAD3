@@ -1,8 +1,15 @@
 {{ config(
     materialized='incremental',
-    on_schema_change='sync_all_columns'
+    on_schema_change='sync_all_columns',
+    indexes=[
+        {'columns': ['pickup_time'], 'type': 'hash'},
+        {'columns': ['dropoff_time'], 'type': 'hash'},
+        {'columns': ['fare_amount'], 'type': 'hash'},
+        {'columns': ['trip_distance'], 'type': 'hash'}
+    ]
 ) }}
 
+-- Load incrementally if possible - after first run it should append the new rows to an existing table
 WITH source AS (
     SELECT * FROM {{ source('bronze', 'nyc_taxi_bronze') }}
     {% if is_incremental() %}
@@ -32,7 +39,9 @@ nyc_taxi_silver AS (
         loaded_at AS bronze_load_time,
         source_file AS source_file
     FROM source
-    WHERE tpep_dropoff_datetime > tpep_pickup_datetime
+    WHERE pickup_time IS NOT NULL -- Filter pickup and dropoff times first - since we want to analyze trips we need to have a proper trip date
+    AND dropoff_time IS NOT NULL
+    AND tpep_dropoff_datetime > tpep_pickup_datetime
 )
 
 SELECT * FROM nyc_taxi_silver
