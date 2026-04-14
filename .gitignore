@@ -10,3 +10,4 @@ venv.bak/
 data
 target
 .user.yml
+dbt/logs
