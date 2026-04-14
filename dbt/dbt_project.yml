@@ -1,7 +1,7 @@
 name: bgd_taxi
 version: '1.0.0'
 profile: baby_pipeline
-
+# Project structure for DBT
 models:
   bgd_taxi:
     silver:
