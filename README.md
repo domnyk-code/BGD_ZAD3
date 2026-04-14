@@ -42,12 +42,15 @@ Dane podzielone są na lata, a każdy rok jest podzielony na miesiące, czyli dl
 ## Zastosowane technologie
 ### Apache Airflow
 ![Airflow logo](/images/airflow_logo.png) 
+
 Apache Airflow to narzędzie do wizualnego tworzenia, organizowania i monitorowania przepływów pracy oraz uruchamiania łańcuchów zadań. W tym projekcie służy jako główny silnik orkiestracyjny dla utworzonego pipeline'u.
 ### DBT
 ![DBT logo](/images/dbt_logo.png) 
+
 DBT to narzędzie służące do transformacji danych załadowanych do bazy, wykorzystujące pliki sql. W tym projekcie jest użyte do stworzenia warstw silver i gold w architekturze medalionowej.
 ### Docker
 ![Docker logo](/images/docker_logo.png) 
+
 Docker to platforma i oprogramowanie służące do konteneryzacji aplikacji, pozwalające uruchamianie programów w wirtualnych kontenerach. W tym projekcie Docker jest wykorzystany aby skonteneryzować Airflow i bazę danych PostgreSQL, w celu szybszego uruchomienia pipeline'u.
 ## Diagram przepływu danych
 ![Data pipeline diagram extended](/images/pipeline_diagram.png)
