@@ -61,7 +61,7 @@ Dane zostały pobrane ze strony NYC TLC, w formacie `parquet`. Pliki zawierając
 - W warstwie złotej utworzone zostają tabele zawierające konkretne informacje, w oparciu o agregacje danych z tabeli srebrnej. Utworzone zostały tabele analizujące dzienne statystyki kursów, statystyki operatorów taksówek, i tabele zawierające podejrzane rekordy na podstawie różnych kryteriów. Tutaj również zastosowane są narzędzia **DBT** do wytworzenia tabel.
 
 ## Jak wygląda orkiestracja procesów
-W pliku `nyc_taxi_pipeline.py` znajduje się główny DAG pipeline'u zawierający w sobie wszystkie skrypty jako zadania Airflow. Najpierw odpalany jest zadanie `ingest_bronze`, uruchamiające skrypt w Pythonie tworzący warstwę brązowo. Następnie odpalane są zadania DBT: `dbt_silver`, `dbt_gold` i `dbt_test`, tworzące odpowiednie warstwy i przeprowadzające testy. Te skrypty odpalane są za pomocą BashOperator, w celu odpowiedniego użycia DBT.
+W pliku `nyc_taxi_pipeline.py` znajduje się główny DAG pipeline'u zawierający w sobie wszystkie skrypty jako zadania Airflow. Najpierw odpalane jest zadanie `ingest_bronze`, uruchamiające skrypt w Pythonie tworzący warstwę brązową. Następnie odpalane są zadania DBT: `dbt_silver`, `dbt_gold` i `dbt_test`, tworzące odpowiednie warstwy i przeprowadzające testy. Te skrypty odpalane są za pomocą BashOperator, w celu odpowiedniego użycia DBT.
 ![Airflow pipeline diagram](/images/airflow_dag_scheme.png)
 ## Co zostało zmienione względem poprzedniego zadania?
 - Uruchamiając PostgreSQL z Dockera wykorzystany jest `volume` pozwalając danym "przetrwać" zamknięcie kontenerów.
