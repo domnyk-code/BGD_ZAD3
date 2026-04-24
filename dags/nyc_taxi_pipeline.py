@@ -2,12 +2,42 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 from datetime import datetime
-import requests, pandas as pd
 from sqlalchemy import create_engine
+
+import pandas as pd
+import os
 
 DB_CONN = "postgresql+psycopg2://airflow:airflow@postgres/airflow"
 # URL FOR later API integration
 # TAXI_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{year}-{month:02d}.parquet"
+
+# Alt function for loading whole directory
+def load_bronze_dir(dir_path):
+
+    print(f"Loading directory {dir_path}")
+
+    files = [f for f in os.listdir(dir_path) if f.endswith(".parquet")]
+    print(f"Found {len(files)} files in {dir_path}")
+
+    engine = create_engine(DB_CONN)
+
+    for filename in sorted(files):
+        file_path = os.path.join(dir_path, filename)
+        print(f"Loading {filename}...")
+
+        df = pd.read_parquet(file_path)
+        df["_loaded_at"] = datetime.utcnow()
+        df["_source_file"] = filename  # handy for traceability
+
+        df.to_sql(
+            name="yellow_trips_raw",
+            con=engine,
+            schema="raw",
+            if_exists="append",
+            index=False,
+            chunksize=10_000,
+        )
+        print(f"  → {len(df):,} rows loaded")
 
 
 def load_bronze(file_path):
