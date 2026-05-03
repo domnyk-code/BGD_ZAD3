@@ -53,16 +53,16 @@ DBT to narzędzie służące do transformacji danych załadowanych do bazy, wyko
 
 Docker to platforma i oprogramowanie służące do konteneryzacji aplikacji, pozwalające uruchamianie programów w wirtualnych kontenerach. W tym projekcie Docker jest wykorzystany aby skonteneryzować Airflow i bazę danych PostgreSQL, w celu szybszego uruchomienia pipeline'u.
 ## Diagram przepływu danych
-![Data pipeline diagram extended](/images/pipeline_diagram.png)
+![Data pipeline diagram extended](/images/pipeline_diagram_pl.png)
 ## Jak przetwarzano dane
 Dane zostały pobrane ze strony NYC TLC, w formacie `parquet`. Pliki zawierające dane zostały umieszczone w folderze `data`, a następnie poddane operacjom z uwzględnieniem architektury medalionowej.
-- W warstwie brązowej, zawierającej się w pliku DAG dla Airflow, suche dane zostają wczytane do bazy danych w tabeli z ogólnymi formatami kolumn. Dodane jest pole opisujące źródło danych (nazwa pliku) oraz moment czasowy załadowania danych (timestamp). Wykorzystana tutaj jest biblioteka **pandas** do załadowania danych do data frame'u.
+- W warstwie brązowej, wykorzystującej strukturę producenta i konsumenta Kafki, suche dane zostają wczytane do bazy danych w tabeli z ogólnymi formatami kolumn. Dodane jest pole opisujące źródło danych (nazwa pliku) oraz moment czasowy załadowania danych (timestamp). Wykorzystana tutaj jest biblioteka **pandas** do załadowania danych do data frame'u.
 - W warstwie srebrnej dane są przekopiowane z warstwy brązowej z konwersją na odpowiednie typy kolumn. Dokonana zostaje wstępna filtracja rekordów,  Wyszczególnione są również rekordy z informacjami nieprawidłowymi w świetle zasad przyjętych dla danych. Do przetwarzania danych w tej warstwie wykorzystane jest już **DBT**, w połączeniu z odpowiednimi plikami SQL.
 - W warstwie złotej utworzone zostają tabele zawierające konkretne informacje, w oparciu o agregacje danych z tabeli srebrnej. Utworzone zostały tabele analizujące dzienne statystyki kursów, statystyki operatorów taksówek, i tabele zawierające podejrzane rekordy na podstawie różnych kryteriów. Tutaj również zastosowane są narzędzia **DBT** do wytworzenia tabel.
 
-## Jak wygląda orkiestracja procesów
+<!-- ## Jak wygląda orkiestracja procesów
 W pliku `nyc_taxi_pipeline.py` znajduje się główny DAG pipeline'u zawierający w sobie wszystkie skrypty jako zadania Airflow. Najpierw odpalane jest zadanie `ingest_bronze`, uruchamiające skrypt w Pythonie tworzący warstwę brązową. Następnie odpalane są zadania DBT: `dbt_silver`, `dbt_gold` i `dbt_test`, tworzące odpowiednie warstwy i przeprowadzające testy. Te skrypty odpalane są za pomocą BashOperator, w celu odpowiedniego użycia DBT.
-![Airflow pipeline diagram](/images/airflow_dag_scheme.png)
+![Airflow pipeline diagram](/images/airflow_dag_scheme.png) -->
 ## Co zostało zmienione względem poprzedniego zadania?
 - Uruchamiając PostgreSQL z Dockera wykorzystany jest `volume` pozwalając danym "przetrwać" zamknięcie kontenerów.
 - Dane ani tabele nie są już usuwane przy każdym przejściu skryptów; warstwy bronze i silver tworzone są przyrostowo.
