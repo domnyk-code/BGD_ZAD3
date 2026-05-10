@@ -53,7 +53,7 @@ DBT to narzędzie służące do transformacji danych załadowanych do bazy, wyko
 
 Docker to platforma i oprogramowanie służące do konteneryzacji aplikacji, pozwalające uruchamianie programów w wirtualnych kontenerach. W tym projekcie Docker jest wykorzystany aby skonteneryzować Airflow i bazę danych PostgreSQL, w celu szybszego uruchomienia pipeline'u.
 ## Diagram przepływu danych
-![Data pipeline diagram extended](/images/pipeline_diagram_pl.png)
+![Data pipeline diagram extended](/images/pipeline_diagram_en.png)
 ## Jak przetwarzano dane
 Dane zostały pobrane ze strony NYC TLC, w formacie `parquet`. Pliki zawierające dane zostały umieszczone w folderze `data`, a następnie poddane operacjom z uwzględnieniem architektury medalionowej.
 - W warstwie brązowej, wykorzystującej strukturę producenta i konsumenta Kafki, suche dane zostają wczytane do bazy danych w tabeli z ogólnymi formatami kolumn. Dodane jest pole opisujące źródło danych (nazwa pliku) oraz moment czasowy załadowania danych (timestamp). Wykorzystana tutaj jest biblioteka **pandas** do załadowania danych do data frame'u.
