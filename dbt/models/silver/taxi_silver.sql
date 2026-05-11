@@ -36,8 +36,8 @@ nyc_taxi_silver AS (
         tolls_amount::numeric AS tolls_amount,
         total_amount::numeric AS total_amount,
         congestion_surcharge::numeric AS congestion_surcharge,
-        loaded_at AS bronze_load_time,
-        source_file AS source_file
+        _loaded_at AS bronze_load_time,
+        _source_file AS source_file
     FROM source
     WHERE tpep_pickup_datetime IS NOT NULL -- Filter pickup and dropoff times first - since we want to analyze trips we need to have a proper trip date
     AND tpep_dropoff_datetime IS NOT NULL
