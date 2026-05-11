@@ -26,13 +26,13 @@ def load_bronze_dir(dir_path):
         print(f"Loading {filename}...")
 
         df = pd.read_parquet(file_path)
-        df["_loaded_at"] = datetime.utcnow()
+        df["_loaded_at"] = datetime.now()
         df["_source_file"] = filename  # handy for traceability
 
         df.to_sql(
-            name="yellow_trips_raw",
+            name="taxi_bronze",
             con=engine,
-            schema="raw",
+            schema="bronze",
             if_exists="append",
             index=False,
             chunksize=10_000,
@@ -74,10 +74,9 @@ with DAG(
 
     ingest_bronze = PythonOperator(
         task_id="ingest_bronze",
-        python_callable=load_bronze,
-        op_kwargs={"file_path": "/opt/airflow/data/yellow_tripdata_2024-01.parquet"},
-        # Provide path to parquet file - work out how to launch this thing from cmd?
-        # Also when launching from docker - needs to be attached volume path
+        python_callable=load_bronze_dir,
+        op_kwargs={"dir_path": "/opt/airflow/data"},
+        # When launching from docker - needs to be attached volume path
     )
 
     dbt_silver = BashOperator(
