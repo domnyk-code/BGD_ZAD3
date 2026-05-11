@@ -31,7 +31,7 @@ schema:
     example: "2024-01-01"
 
   - name: total_trips
-    type: integer
+    type: bigint
     nullable: false
     description: "Total amount of trips made in the associated day"
     example: "1305"
@@ -43,43 +43,43 @@ schema:
     example: ""
 
   - name: total_passengers
-    type: integer
+    type: bigint
     nullable: false
     description: "Total amount of passengers served during the date"
     example: "1305"
 
   - name: avg_passengers
-    type: integer
+    type: double
     nullable: false
     description: "Average number of passengers for a trip on the date"
     example: "1305"
 
   - name: total_fares
-    type: integer
+    type: double
     nullable: false
     description: "Total amount of fare paid for all the trips during the date"
     example: "1305"
 
   - name: total_tips
-    type: integer
+    type: double
     nullable: false
     description: "Total amount of tips given for all the trips during the date"
     example: "1305"
 
   - name: total_tolls
-    type: integer
+    type: double
     nullable: false
     description: "Total amount of tolls paid for all the trips during the date (eg. a toll for entering a zone or parking)"
     example: "1305"
   
   - name: total_revenue
-    type: integer
+    type: double
     nullable: false
     description: "Total amount of revenue (fare plus tips minus tolls) for all trips for the date"
     example: "1305"
   
   - name: average_fare
-    type: integer
+    type: double
     nullable: false
     description: "Average amount of fare paid for a trip on the date"
     example: "1305"
@@ -114,7 +114,7 @@ SLA:
 
 access:
   method: "CSV file download for sample 2024 data"
-  location: ""
+  location: "https://github.com/domnyk-code/BGD_ZAD3/tree/master/ingested_data_example"
   formats:
     - "CSV file: taxi_gold_daily_analysis.csv"
   instructions: "Download .csv file. Import into a database, or use Python with pandas, or use any data visualisation tool"
