@@ -1,0 +1,147 @@
+# Data Product Contract — NYC TLC Taxi Trips
+# Based on Open Data Contract Standard (ODCS)
+# Repository: https://github.com/domnyk-code/BGD_ZAD3
+
+dataset: nyc-tlc-yellow-taxi-trips-data
+version: "1.8"
+description: >
+  Monthly analytical dataset containing data of taxi trips recorded in New York City,
+  under the jurisdiction of NYC Taxi & Limousine Commission. 
+  Contains information about trip date, vendor info, and associated financial metrics.
+  Data present is recorded from January 2009 onwards, up to March 2026.
+  
+
+product:
+  name: "NYC TLC Taxi Trips - Monthly Monitor"
+  owner: "Dominik Nykiel"
+  contact: "s24813@pjwstk.edu.pl"
+  domain: "Mobility / Financial analysis"
+  primary_users: "Data analysts, researchers, TLC analysts in particular"
+  purpose: >
+    Enables analysis of daily and monthly trips made by the registered vehicles.
+    Allows for viewing of data such as total passengers, average passengers and financial metrics.
+    Assists with analysing daily and monthly trends in aforementioned fields, 
+    and financial analysis of taxi performance.
+
+schema:
+  - name: trip_date
+    type: date
+    nullable: false
+    description: "Day of the trip - primary key"
+    example: "2024-01-01"
+
+  - name: total_trips
+    type: integer
+    nullable: false
+    description: "Total amount of trips made in the associated day"
+    example: "1305"
+
+  - name: active_vendors
+    type: integer
+    nullable: false
+    description: "Amount of active vendors on a given date"
+    example: ""
+
+  - name: total_passengers
+    type: integer
+    nullable: false
+    description: "Total amount of passengers served during the date"
+    example: "1305"
+
+  - name: avg_passengers
+    type: integer
+    nullable: false
+    description: "Average number of passengers for a trip on the date"
+    example: "1305"
+
+  - name: total_fares
+    type: integer
+    nullable: false
+    description: "Total amount of fare paid for all the trips during the date"
+    example: "1305"
+
+  - name: total_tips
+    type: integer
+    nullable: false
+    description: "Total amount of tips given for all the trips during the date"
+    example: "1305"
+
+  - name: total_tolls
+    type: integer
+    nullable: false
+    description: "Total amount of tolls paid for all the trips during the date (eg. a toll for entering a zone or parking)"
+    example: "1305"
+  
+  - name: total_revenue
+    type: integer
+    nullable: false
+    description: "Total amount of revenue (fare plus tips minus tolls) for all trips for the date"
+    example: "1305"
+  
+  - name: average_fare
+    type: integer
+    nullable: false
+    description: "Average amount of fare paid for a trip on the date"
+    example: "1305"
+
+quality_rules: 
+  - rule: ExpectColumnValuesToBeUnique
+    target: trip_date
+    condition: "UNIQUE"
+
+  - rule: ExpectColumnValuesNotToBeNull
+    target: total_fares
+    condition: "NOT NULL"
+
+  - rule: ExpectColumnValuesNotToBeNull
+    target: total_tips
+    condition: "NOT NULL"
+
+  - rule: ExpectColumnValuesNotToBeNull
+    target: total_tolls
+    condition: "NOT NULL"
+  
+  - rule: ExpectColumnValuesNotToBeNull
+    target: total_revenue
+    condition: "NOT NULL"
+
+
+SLA:
+  refresh_frequency: "Monthly"
+  max_delay: "60 days after month end (due to data publishing limitations)"
+  retention: "Indefinite, historical data preserved"
+  update_trigger: "Airflow DAG, scheduled monthly"
+
+access:
+  method: "CSV file download for sample 2024 data"
+  location: ""
+  formats:
+    - "CSV file: taxi_gold_daily_analysis.csv"
+  instructions: "Download .csv file. Import into a database, or use Python with pandas, or use any data visualisation tool"
+  credentials: "None required, public repository"
+
+sources:
+  - name: "NYC TLC Yellow Taxi Trips Dataset"
+    type: "Parquet file - taxi trips statistics"
+    refresh: "Monthly"
+    url: "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
+
+  - name: "NYC TLC Zone Lookup"
+    type: "CSV file - contains zone information"
+    refresh: "Yearly - in case of zone IDs changing"
+    url: "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
+
+limitations:
+  -	There exist record with either null or negative values in payment columns, whether those signify returns or unpaid courses is unknown.
+  - There is a small percentage of records where data is suspicious, eg. more than a legal number of passengers.
+  - Although the data is published monthly, there is a two month delay when publishing the datasets, so for example there is still no data from April 2026 as of writing this document.
+  - Some financial metrics can be hard to understand for people not familiar with taxi and USA road systems.
+  - Data structure is prone to changing over time, as new types of fares are added, eg. an airport fare has been added starting in 2025.
+
+owners:
+  producer: "Dominik Nykiel"
+  contact: "s24813@pjwstk.edu.pl"
+  course: "PJATK — Big Data (BGD), 2025/2026"
+
+security:
+  classification: "Public — NYC TLC Open Data"
